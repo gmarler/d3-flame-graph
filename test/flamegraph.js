@@ -4,25 +4,25 @@
 
 import flamegraph from 'd3-flamegraph'
 import { defaultFlamegraphTooltip } from 'd3-flamegraph-tooltip'
-import { select } from 'd3-selection'
+import { select } from 'd3'
 
 describe('flame graph library', () => {
-    let chartElem
+  let chartElem
 
-    beforeEach(() => {
-        chartElem = document.createElement('div')
-    })
+  beforeEach(() => {
+    chartElem = document.createElement('div')
+  })
 
-    it('should generate a minimal graph with a single stack', () => {
-        const chart = flamegraph()
-        const stacks = {
-            name: 'root',
-            value: 1,
-            children: []
-        }
+  it('should generate a minimal graph with a single stack', () => {
+    const chart = flamegraph()
+    const stacks = {
+      name: 'root',
+      value: 1,
+      children: []
+    }
 
-        select(chartElem).datum(stacks).call(chart)
-        expect(chartElem).toMatchInlineSnapshot(`
+    select(chartElem).datum(stacks).call(chart)
+    expect(chartElem).toMatchInlineSnapshot(`
             <div>
               <svg
                 class="partition d3-flame-graph"
@@ -63,18 +63,18 @@ describe('flame graph library', () => {
               </svg>
             </div>
         `)
-    })
+  })
 
-    it('HTML-escapes profile HTML in SVG titles', () => {
-        const chart = flamegraph()
-        const stacks = {
-            name: "<img>",
-            value: 1,
-            children: [],
-        }
+  it('HTML-escapes profile HTML in SVG titles', () => {
+    const chart = flamegraph()
+    const stacks = {
+      name: '<img>',
+      value: 1,
+      children: []
+    }
 
-        select(chartElem).datum(stacks).call(chart)
-        expect(chartElem).toMatchInlineSnapshot(`
+    select(chartElem).datum(stacks).call(chart)
+    expect(chartElem).toMatchInlineSnapshot(`
             <div>
               <svg
                 class="partition d3-flame-graph"
@@ -115,99 +115,99 @@ describe('flame graph library', () => {
               </svg>
             </div>
         `)
-    })
+  })
 
-    it('HTML-escapes profile frames in details element', () => {
-        const detailsElem = document.createElement('div')
-        const chart = flamegraph().setDetailsElement(detailsElem)
-        const stacks = {
-            name: '<img>',
-            value: 1,
-            children: [],
-        }
+  it('HTML-escapes profile frames in details element', () => {
+    const detailsElem = document.createElement('div')
+    const chart = flamegraph().setDetailsElement(detailsElem)
+    const stacks = {
+      name: '<img>',
+      value: 1,
+      children: []
+    }
 
-        select(chartElem)
-            .datum(stacks)
-            .call(chart)
-            .select('g')
-            .dispatch('mouseover')
-        expect(detailsElem).toMatchInlineSnapshot(`
+    select(chartElem)
+      .datum(stacks)
+      .call(chart)
+      .select('g')
+      .dispatch('mouseover')
+    expect(detailsElem).toMatchInlineSnapshot(`
             <div>
               &lt;img&gt; (100.000%, 1 samples)
             </div>
         `)
-    })
+  })
 
-    it('empties the details element on mouseout', () => {
-        const detailsElem = document.createElement('div')
-        const chart = flamegraph().setDetailsElement(detailsElem)
-        const stacks = {
-            name: 'root',
-            value: 1,
-            children: [],
-        }
+  it('empties the details element on mouseout', () => {
+    const detailsElem = document.createElement('div')
+    const chart = flamegraph().setDetailsElement(detailsElem)
+    const stacks = {
+      name: 'root',
+      value: 1,
+      children: []
+    }
 
-        const g = select(chartElem).datum(stacks).call(chart).select('g')
-        g.dispatch('mouseover')
-        expect(detailsElem).toMatchInlineSnapshot(`
+    const g = select(chartElem).datum(stacks).call(chart).select('g')
+    g.dispatch('mouseover')
+    expect(detailsElem).toMatchInlineSnapshot(`
             <div>
               root (100.000%, 1 samples)
             </div>
         `)
-        g.dispatch('mouseout')
-        expect(detailsElem).toMatchInlineSnapshot(`<div />`)
-    })
+    g.dispatch('mouseout')
+    expect(detailsElem).toMatchInlineSnapshot('<div />')
+  })
 
-    it('search should update details element', () => {
-        const detailsElem = document.createElement('div')
-        const chart = flamegraph().setDetailsElement(detailsElem)
-        const stacks = {
-            name: '<img>',
-            value: 1,
-            children: [],
-        }
+  it('search should update details element', () => {
+    const detailsElem = document.createElement('div')
+    const chart = flamegraph().setDetailsElement(detailsElem)
+    const stacks = {
+      name: '<img>',
+      value: 1,
+      children: []
+    }
 
-        select(chartElem).datum(stacks).call(chart)
-        chart.search('img')
+    select(chartElem).datum(stacks).call(chart)
+    chart.search('img')
 
-        expect(detailsElem).toMatchInlineSnapshot(`
+    expect(detailsElem).toMatchInlineSnapshot(`
             <div>
               search: 1 of 1 total samples ( 100.000%)
             </div>
         `)
-    })
+  })
 
-    it('should generate a graph with multiple stacks, using the self value logic', () => {
-        const sortByValue = (lhs, rhs) => {
-            if (lhs.value === rhs.value) return 0
-            if (lhs.value < rhs.value) return 1
-            return -1
+  it('should generate a graph with multiple stacks, using the self value logic', () => {
+    const sortByValue = (lhs, rhs) => {
+      if (lhs.value === rhs.value) return 0
+      if (lhs.value < rhs.value) return 1
+      return -1
+    }
+
+    const chart = flamegraph().sort(sortByValue).selfValue(true)
+    const stacks = {
+      name: 'root',
+      value: 0,
+      children: [
+        {
+          name: 'root.node1',
+          value: 2,
+          children: [
+            {
+              name: 'root.node1.node1',
+              value: 3
+            }
+          ]
+        },
+        {
+          name: 'root.node2',
+          value: 4
         }
+      ]
+    }
 
-        const chart = flamegraph().sort(sortByValue).selfValue(true)
-        const stacks = {
-            name: 'root',
-            value: 0,
-            children: [
-                {
-                    name: 'root.node1',
-                    value: 2,
-                    children: [
-                        {
-                            name: 'root.node1.node1',
-                            value: 3
-                        }
-                    ]
-                },
-                {
-                    name: 'root.node2',
-                    value: 4
-                }
-            ]
-        }
-
-        select(chartElem).datum(stacks).call(chart)
-        expect(chartElem).toMatchInlineSnapshot(`
+    select(chartElem).datum(stacks).call(chart)
+    expect(chartElem).toMatchInlineSnapshot(`
             <div>
               <svg
                 class="partition d3-flame-graph"
@@ -320,24 +320,24 @@ describe('flame graph library', () => {
               </svg>
             </div>
         `)
-    })
+  })
 
-    it('tooltip contains name of stack frame by default, hiding on mouseout', () => {
-        const tooltip = defaultFlamegraphTooltip()
-        const chart = flamegraph().tooltip(tooltip)
-        const stacks = {
-            name: 'main',
-            value: 1,
-            children: [],
-        }
+  it('tooltip contains name of stack frame by default, hiding on mouseout', () => {
+    const tooltip = defaultFlamegraphTooltip()
+    const chart = flamegraph().tooltip(tooltip)
+    const stacks = {
+      name: 'main',
+      value: 1,
+      children: []
+    }
 
-        const g = select(chartElem)
-            .datum(stacks)
-            .call(chart)
-            .select('g')
-            .dispatch('mouseover')
+    const g = select(chartElem)
+      .datum(stacks)
+      .call(chart)
+      .select('g')
+      .dispatch('mouseover')
 
-        expect(document.querySelectorAll('.d3-flame-graph-tip')).toMatchInlineSnapshot(`
+    expect(document.querySelectorAll('.d3-flame-graph-tip')).toMatchInlineSnapshot(`
         NodeList [
           <div
             class="d3-flame-graph-tip"
@@ -348,8 +348,8 @@ describe('flame graph library', () => {
         ]
         `)
 
-        g.dispatch('mouseout')
-        expect(document.querySelectorAll('.d3-flame-graph-tip')).toMatchInlineSnapshot(`
+    g.dispatch('mouseout')
+    expect(document.querySelectorAll('.d3-flame-graph-tip')).toMatchInlineSnapshot(`
         NodeList [
           <div
             class="d3-flame-graph-tip"
@@ -360,25 +360,25 @@ describe('flame graph library', () => {
         ]
         `)
 
-        tooltip.destroy() // clean up the DOM for other tests
-    })
+    tooltip.destroy() // clean up the DOM for other tests
+  })
 
-    it('tooltip HTML-escapes contents by default', () => {
-        const tooltip = defaultFlamegraphTooltip()
-        const chart = flamegraph().tooltip(tooltip)
-        const stacks = {
-            name: '<img>',
-            value: 1,
-            children: [],
-        }
+  it('tooltip HTML-escapes contents by default', () => {
+    const tooltip = defaultFlamegraphTooltip()
+    const chart = flamegraph().tooltip(tooltip)
+    const stacks = {
+      name: '<img>',
+      value: 1,
+      children: []
+    }
 
-        select(chartElem)
-            .datum(stacks)
-            .call(chart)
-            .select('g')
-            .dispatch('mouseover')
+    select(chartElem)
+      .datum(stacks)
+      .call(chart)
+      .select('g')
+      .dispatch('mouseover')
 
-        expect(document.querySelectorAll('.d3-flame-graph-tip')).toMatchInlineSnapshot(`
+    expect(document.querySelectorAll('.d3-flame-graph-tip')).toMatchInlineSnapshot(`
         NodeList [
           <div
             class="d3-flame-graph-tip"
@@ -388,26 +388,26 @@ describe('flame graph library', () => {
           </div>,
         ]
         `)
-        tooltip.destroy() // clean up the DOM for other tests
-    })
+    tooltip.destroy() // clean up the DOM for other tests
+  })
 
-    it('tooltip with custom html does not HTML-escape contents', () => {
-        const tooltip = defaultFlamegraphTooltip()
-            .html(d => '<a>HTML</a>')
-        const chart = flamegraph().tooltip(tooltip)
-        const stacks = {
-            name: '<img>',
-            value: 1,
-            children: [],
-        }
+  it('tooltip with custom html does not HTML-escape contents', () => {
+    const tooltip = defaultFlamegraphTooltip()
+      .html(d => '<a>HTML</a>')
+    const chart = flamegraph().tooltip(tooltip)
+    const stacks = {
+      name: '<img>',
+      value: 1,
+      children: []
+    }
 
-        select(chartElem)
-            .datum(stacks)
-            .call(chart)
-            .select('g')
-            .dispatch('mouseover')
+    select(chartElem)
+      .datum(stacks)
+      .call(chart)
+      .select('g')
+      .dispatch('mouseover')
 
-        expect(document.querySelectorAll('.d3-flame-graph-tip')).toMatchInlineSnapshot(`
+    expect(document.querySelectorAll('.d3-flame-graph-tip')).toMatchInlineSnapshot(`
         NodeList [
           <div
             class="d3-flame-graph-tip"
@@ -419,26 +419,26 @@ describe('flame graph library', () => {
           </div>,
         ]
         `)
-        tooltip.destroy() // clean up the DOM for other tests
-    })
+    tooltip.destroy() // clean up the DOM for other tests
+  })
 
-    it('tooltip with custom text does not interpret text as HTML', () => {
-        const tooltip = defaultFlamegraphTooltip()
-            .text(d => 'name: ' + d.data.name + ', value: ' + d.data.value)
-        const chart = flamegraph().tooltip(tooltip)
-        const stacks = {
-            name: '<root>',
-            value: 1,
-            children: [],
-        }
+  it('tooltip with custom text does not interpret text as HTML', () => {
+    const tooltip = defaultFlamegraphTooltip()
+      .text(d => 'name: ' + d.data.name + ', value: ' + d.data.value)
+    const chart = flamegraph().tooltip(tooltip)
+    const stacks = {
+      name: '<root>',
+      value: 1,
+      children: []
+    }
 
-        select(chartElem)
-            .datum(stacks)
-            .call(chart)
-            .select('g')
-            .dispatch('mouseover')
+    select(chartElem)
+      .datum(stacks)
+      .call(chart)
+      .select('g')
+      .dispatch('mouseover')
 
-        expect(document.querySelectorAll('.d3-flame-graph-tip')).toMatchInlineSnapshot(`
+    expect(document.querySelectorAll('.d3-flame-graph-tip')).toMatchInlineSnapshot(`
         NodeList [
           <div
             class="d3-flame-graph-tip"
@@ -448,6 +448,6 @@ describe('flame graph library', () => {
           </div>,
         ]
         `)
-        tooltip.destroy() // clean up the DOM for other tests
-    })
+    tooltip.destroy() // clean up the DOM for other tests
+  })
 })

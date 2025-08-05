@@ -1,10 +1,4 @@
-import { select } from 'd3-selection'
-import { format } from 'd3-format'
-import { ascending } from 'd3-array'
-import { partition, hierarchy } from 'd3-hierarchy'
-import { scaleLinear } from 'd3-scale'
-import { easeCubic } from 'd3-ease'
-import 'd3-transition'
+import * as d3 from 'd3'
 import { generateColorVector } from './colorUtils'
 import { calculateColor } from './colorScheme'
 
@@ -16,7 +10,7 @@ export default function () {
   let tooltip = null // tooltip
   let title = '' // graph title
   let transitionDuration = 750
-  let transitionEase = easeCubic // tooltip offset
+  let transitionEase = d3.easeCubic // tooltip offset
   let sort = false
   let inverted = false // invert the graph direction
   let clickHandler = null
@@ -62,7 +56,7 @@ export default function () {
   let searchHandler = function (searchResults, searchSum, totalValue) {
     searchDetails = () => {
       if (detailsElement) {
-        detailsElement.textContent = 'search: ' + searchSum + ' of ' + totalValue + ' total samples ( ' + format('.3f')(100 * (searchSum / totalValue), 3) + '%)'
+        detailsElement.textContent = 'search: ' + searchSum + ' of ' + totalValue + ' total samples ( ' + d3.format('.3f')(100 * (searchSum / totalValue), 3) + '%)'
       }
     }
     searchDetails()
@@ -99,7 +93,7 @@ export default function () {
   const originalDetailsHandler = detailsHandler
 
   let labelHandler = function (d) {
-    return getName(d) + ' (' + format('.3f')(100 * (d.x1 - d.x0), 3) + '%, ' + getValue(d) + ' samples)'
+    return getName(d) + ' (' + d3.format('.3f')(100 * (d.x1 - d.x0), 3) + '%, ' + getValue(d) + ' samples)'
   }
 
   let colorMapper = function (d) {
@@ -173,7 +167,7 @@ export default function () {
     fadeAncestors(d)
     update()
     if (scrollOnZoom) {
-      const chartOffset = select(this).select('svg')._groups[0][0].parentNode.offsetTop
+      const chartOffset = d3.select(this).select('svg')._groups[0][0].parentNode.offsetTop
       const maxFrames = (window.innerHeight - chartOffset) / c
       const frameOffset = (d.height - maxFrames + 10) * c
       window.scrollTo({
@@ -245,11 +239,11 @@ export default function () {
     if (typeof sort === 'function') {
       return sort(a, b)
     } else if (sort) {
-      return ascending(getName(a), getName(b))
+      return d3.ascending(getName(a), getName(b))
     }
   }
 
-  const p = partition()
+  const p = d3.partition()
 
   function filterNodes (root) {
     let nodeList = root.descendants()
@@ -264,8 +258,8 @@ export default function () {
 
   function update () {
     selection.each(function (root) {
-      const x = scaleLinear().range([0, w])
-      const y = scaleLinear().range([0, c])
+      const x = d3.scaleLinear().range([0, w])
+      const y = d3.scaleLinear().range([0, c])
 
       reappraiseNode(root)
 
@@ -277,7 +271,7 @@ export default function () {
       function width (d) { return (d.x1 - d.x0) * kx }
 
       const descendants = filterNodes(root)
-      const svg = select(this).select('svg')
+      const svg = d3.select(this).select('svg')
       svg.attr('width', w)
 
       let g = svg.selectAll('g').data(descendants, function (d) { return d.id })
@@ -493,7 +487,7 @@ export default function () {
     selection.datum((data) => {
       if (data.constructor.name !== 'Node') {
         // creating a root hierarchical structure
-        const root = hierarchy(data, getChildren)
+        const root = d3.hierarchy(data, getChildren)
 
         // augumenting nodes with ids
         adoptNode(root)
@@ -532,8 +526,8 @@ export default function () {
 
     // create chart svg
     selection.each(function (data) {
-      if (select(this).select('svg').size() === 0) {
-        const svg = select(this)
+      if (d3.select(this).select('svg').size() === 0) {
+        const svg = d3.select(this)
           .append('svg:svg')
           .attr('width', w)
           .attr('class', 'partition d3-flame-graph')

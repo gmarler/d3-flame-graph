@@ -1,4 +1,4 @@
-import { select } from 'd3-selection'
+import { select } from 'd3'
 import flamegraph from '../../flamegraph'
 import { generateColorVector } from '../../colorUtils'
 import { calculateColor } from '../../colorScheme'

@@ -1,16 +1,13 @@
 /* global event */
 
-import { select } from 'd3-selection'
-import 'd3-transition'
-import 'd3-dispatch'
-import 'd3-ease'
+import * as d3 from 'd3'
 
 function defaultLabel (d) {
   return d.data.name
 }
 
 export function defaultFlamegraphTooltip () {
-  const rootElement = select('body')
+  const rootElement = d3.select('body')
   let tooltip = null
   // Function to get HTML content from data.
   let html = defaultLabel

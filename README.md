@@ -2,21 +2,11 @@
 
 A D3.js plugin that produces flame graphs from hierarchical data.
 
-[![Flame Graph Example](https://media.giphy.com/media/l41JMjBaxrZw1bqpi/giphy.gif)](http://spiermar.github.io/d3-flame-graph/)
-
 If you don't know what flame graphs are, check [Brendan Gregg's post](http://www.brendangregg.com/flamegraphs.html).
 
 > Flame graphs are a visualization of profiled software, allowing the most frequent code-paths to be identified quickly and accurately. They can be generated using my open source programs on [github.com/brendangregg/FlameGraph](http://github.com/brendangregg/FlameGraph), which create interactive SVGs.
 >
 > <cite>Brendan Gregg</cite>
-
-## Examples
-
-Click [here](http://spiermar.github.io/d3-flame-graph/) to check the demo, and [source](https://github.com/spiermar/d3-flame-graph/blob/gh-pages/index.html).
-
-Click [here](http://spiermar.github.io/d3-flame-graph/live.html) to check the animated assembly demo, and [source](https://github.com/spiermar/d3-flame-graph/blob/gh-pages/live.html)
-
-Click [here](http://bl.ocks.org/spiermar/4509343495f8d6e214cb) to check the simplified demo on bl.ocks.org.
 
 ## Getting Started
 
@@ -396,24 +386,24 @@ Removes the flamegraph.
 
 ## Issues
 
-For bugs, questions and discussions please use the [GitHub Issues](https://github.com/spiermar/d3-flame-graph/issues).
+For bugs, questions and discussions please use the [GitHub Issues](https://github.com/gmarler/d3-flame-graph/issues).
 
 ## Contributing
 
 We love contributions! But in order to avoid total chaos, we have a few guidelines.
 
-If you found a bug, have questions or feature requests, don't hesitate to open an [issue](https://github.com/spiermar/d3-flame-graph/issues).
+If you found a bug, have questions or feature requests, don't hesitate to open an [issue](https://github.com/gmarler/d3-flame-graph/issues).
 
 If you're working on an issue, please comment on it so we can assign you to it.
 
-If you have code to submit, follow the general pull request format. Fork the repo, make your changes, and submit a [pull request](https://github.com/spiermar/d3-flame-graph/pulls).
+If you have code to submit, follow the general pull request format. Fork the repo, make your changes, and submit a [pull request](https://github.com/gmarler/d3-flame-graph/pulls).
 
 ### Build
 
 This plugin uses Webpack as build system. It includes a development server with live refresh on any changes. To start it, just execute the `serve` npm script.
 
 ```
-$ git clone https://github.com/spiermar/d3-flame-graph.git
+$ git clone https://github.com/gmarler/d3-flame-graph.git
 $ cd d3-flame-graph
 $ npm install
 $ npm run serve
@@ -425,8 +415,6 @@ A standalone template with all JavaScript and CSS inlined gets built at `dist/te
 It contains a placeholder `/** @flamegraph_params **/` which needs to be replaced with the stacks in the format described in [Input Format](#input-format).
 
 ## License
-
-Copyright 2018 Martin Spier. All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the “License”); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
